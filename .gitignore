@@ -6,3 +6,4 @@ bags/render_preview/
 bags/bags.blend*
 bags/trajectory.txt*
 __pycache__/
+render.log

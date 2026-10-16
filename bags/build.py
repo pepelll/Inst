@@ -506,6 +506,8 @@ r.image_settings.color_mode = "RGBA"
 r.image_settings.color_depth = "8"
 r.threads_mode = "AUTO"
 r.use_persistent_data = True
+r.use_overwrite = False  # resumable: frames already on disk are skipped
+r.use_placeholder = True
 
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, "bags.blend"))
 
