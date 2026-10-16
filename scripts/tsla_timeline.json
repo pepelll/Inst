@@ -1,0 +1,26 @@
+{
+  "fps": 60,
+  "durationInFrames": 330,
+  "bars": 9,
+  "bgIn": [
+    0,
+    30
+  ],
+  "header": 12,
+  "baseline": [
+    6,
+    44
+  ],
+  "candlesIn": 14,
+  "candleStagger": 5,
+  "volumesIn": 90,
+  "volumeStagger": 3,
+  "spike": 150,
+  "spikePeak": 172,
+  "ghostLaunch": 196,
+  "ghostApex": 234,
+  "fallStart": 238,
+  "land": 264,
+  "priceChip": 266,
+  "sweep": 292
+}
