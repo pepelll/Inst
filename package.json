@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render ArutPromo out/arut_promo.mp4"
+    "render": "remotion render ArutPromo out/arut_promo.mp4",
+    "sfx": "bash scripts/mux.sh"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.535",

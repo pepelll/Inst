@@ -1,0 +1,95 @@
+{
+  "fps": 60,
+  "durationInFrames": 252,
+  "youtube": {
+    "id": "youtube",
+    "logoIn": 0,
+    "logoSweep": 6,
+    "captionWords": [
+      {
+        "frame": 12,
+        "key": false
+      },
+      {
+        "frame": 15,
+        "key": false
+      },
+      {
+        "frame": 18,
+        "key": false
+      },
+      {
+        "frame": 21,
+        "key": true
+      }
+    ],
+    "morph": 36,
+    "nickWords": [
+      {
+        "frame": 60
+      },
+      {
+        "frame": 65
+      }
+    ],
+    "sweeps": [
+      57,
+      105
+    ],
+    "textExit": 144,
+    "collapse": 147
+  },
+  "twitch": {
+    "id": "twitch",
+    "logoIn": 162,
+    "logoSweep": 165,
+    "captionWords": [
+      {
+        "frame": 168,
+        "key": false
+      },
+      {
+        "frame": 171,
+        "key": false
+      },
+      {
+        "frame": 174,
+        "key": false
+      },
+      {
+        "frame": 177,
+        "key": true
+      }
+    ],
+    "morph": 177,
+    "nickWords": [
+      {
+        "frame": 195
+      }
+    ],
+    "sweeps": [
+      222
+    ],
+    "textExit": null,
+    "collapse": null
+  },
+  "transition": {
+    "collapseDuration": 7,
+    "dotStart": 154,
+    "recolor": [
+      152,
+      158
+    ],
+    "expand": [
+      155,
+      162
+    ],
+    "flashPeak": 160,
+    "flashOpacity": 0.15,
+    "fadeOut": [
+      161,
+      170
+    ],
+    "auroraSwitch": 159
+  }
+}
