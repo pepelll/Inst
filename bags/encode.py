@@ -39,7 +39,7 @@ if __name__ == "__main__":
     bg = backdrop(w, h)
     cmd = [
         "ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}", "-r", "60", "-i", "-",
-        "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-movflags", "+faststart", out,
+        "-vf", "scale=1920:1080:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-movflags", "+faststart", out,
     ]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     for f in files:
