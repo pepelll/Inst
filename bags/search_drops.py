@@ -11,13 +11,11 @@ import sys
 import numpy as np
 
 BASE = [
-    (1, (-0.08, 0.05, 0.60), (6, -5, 12)),
-    (13, (0.28, 0.10, 1.08), (-10, 8, -18)),
-    (28, (-0.30, 0.10, 1.10), (14, -10, 25)),
-    (37, (0.08, -0.22, 1.12), (-8, -14, -6)),
-    (52, (-0.02, -0.04, 1.25), (8, 5, 10)),
+    (1, (-0.04, 0.03, 0.72), (6, -5, 12)),
+    (14, (0.14, 0.02, 1.62), (-10, 8, -18)),
+    (42, (-0.02, -0.04, 1.75), (8, 5, 10)),
 ]
-CAM = np.array([0.0, -2.55, 0.92])
+CAM = np.array([0.12, -2.85, 1.12])
 
 
 def rotate(q, v):
@@ -34,15 +32,20 @@ def score(traj):
     pos = np.array([fin[n][:3] for n in names])
     for n in names:
         p, q = fin[n][:3], fin[n][3:]
-        if abs(p[0]) > 0.6 or p[1] < -0.42 or p[1] > 0.5:
+        if abs(p[0]) > 0.33 or p[1] < -0.35 or p[1] > 0.4:
             s -= 6
         front = rotate(q, (0, -1, 0))
         length = rotate(q, (1, 0, 0))
         to_cam = (CAM - p) / np.linalg.norm(CAM - p)
-        s += 1.2 * max(0, front @ to_cam)  # logo visible
+        s += 2.0 * max(0, front @ to_cam)  # logo visible
         if abs(length[2]) > 0.55:
-            s -= 2.5  # standing on an end looks odd
-    s -= 4 * np.mean(np.linalg.norm(pos[:, :2] - pos[:, :2].mean(0), axis=1))
+            s -= 5  # standing on an end looks odd
+    for a_ in range(len(names)):
+        for b_ in range(a_ + 1, len(names)):
+            d = pos[a_] - pos[b_]
+            if abs(d[0]) < 0.18 and abs(d[2]) < 0.12:
+                s -= 3  # one bag hidden behind another
+    s -= 6 * np.mean(np.linalg.norm(pos[:, :2] - pos[:, :2].mean(0), axis=1))
     top = [fin[n][2] for n in names]
     s += 2.0 * (max(top) > 0.22) + 1.0 * (fin[names[-1]][2] > 0.22)
     # visible but calm settle: still moving a bit is fine, flying is not
@@ -63,7 +66,7 @@ def perturb(rng):
         if k == 0:
             out.append((rel, loc, tuple(r + rng.uniform(-6, 6) for r in rot)))
             continue
-        out.append((rel, (loc[0] + rng.uniform(-0.12, 0.12), loc[1] + rng.uniform(-0.12, 0.12), loc[2]),
+        out.append((rel, (loc[0] + rng.uniform(-0.1, 0.1), loc[1] + rng.uniform(-0.1, 0.1), loc[2]),
                     tuple(r + rng.uniform(-18, 18) for r in rot)))
     return out
 

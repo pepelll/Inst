@@ -13,8 +13,8 @@ from PIL import Image
 def backdrop(w, h):
     """Neutral light grey, softly brighter in the centre (sRGB 0..1). One field for wall and floor: no horizon."""
     y, x = np.mgrid[0:h, 0:w].astype(np.float32)
-    nx = (x / w - 0.5) / 0.62
-    ny = (y / h - 0.44) / 0.58
+    nx = (x / w - 0.5) / (0.62 * max(1, h / w) ** 0.5)
+    ny = (y / h - 0.44) / (0.58 / max(1, h / w) ** 0.5)
     r = np.clip(np.sqrt(nx**2 + ny**2), 0, 1.6)
     t = np.clip(r, 0, 1) ** 1.6
     v = 0.86 - 0.21 * t
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     bg = backdrop(w, h)
     cmd = [
         "ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}", "-r", "60", "-i", "-",
-        "-vf", "scale=1920:1080:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-movflags", "+faststart", out,
+        "-vf", "scale=1080:1920:flags=lanczos", "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-movflags", "+faststart", out,
     ]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     for f in files:

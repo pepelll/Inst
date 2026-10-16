@@ -324,10 +324,12 @@ catcher.data.materials.append(fm)
 cam_data = bpy.data.cameras.new("Cam")
 cam_data.lens = 50
 cam_data.sensor_width = 36
+cam_data.sensor_fit = "VERTICAL"
+cam_data.sensor_height = 36
 cam = bpy.data.objects.new("Cam", cam_data)
 sc.collection.objects.link(cam)
-cam.location = (0.0, -2.55, 0.92)
-target = Vector((0.0, 0.0, 0.22))
+cam.location = (0.12, -2.85, 1.12)
+target = Vector((0.12, 0.0, 0.47))
 cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
 sc.camera = cam
 
@@ -379,11 +381,9 @@ floor_box.hide_render = True
 # (release frame, location, rotation XYZ degrees) - bag 1 is already in frame at t = 0
 # (release frame, location, rotation XYZ deg); picked by search_drops.py for a compact pile with logos to camera
 DROPS = [
-    (1, (-0.08, 0.05, 0.6), (8.8, -5.7, 6.8)),
-    (13, (0.302, 0.188, 1.08), (-14.7, -6.5, -32.2)),
-    (28, (-0.202, 0.007, 1.1), (19.6, -24.8, 25.4)),
-    (37, (0.179, -0.284, 1.12), (-14.9, -10.0, -3.4)),
-    (52, (-0.005, -0.066, 1.25), (-8.5, 8.4, 2.0)),
+    (1, (-0.04, 0.03, 0.72), (4.8, -9.8, 10.5)),
+    (14, (0.171, 0.029, 1.62), (-8.4, 20.4, -10.0)),
+    (42, (0.017, -0.134, 1.75), (1.1, 11.6, -2.4)),
 ]
 if os.environ.get("DROPS"):
     DROPS = [tuple(d) for d in __import__("json").loads(os.environ["DROPS"])]
@@ -484,8 +484,8 @@ if "--sim-only" in args:
 r = sc.render
 r.engine = "CYCLES"
 sc.cycles.device = "CPU"
-r.resolution_x, r.resolution_y = 1920, 1080
-r.resolution_percentage = 40 if PREVIEW else 75  # 1440x810, upscaled to 1080p in encode.py
+r.resolution_x, r.resolution_y = 1080, 1920  # 9:16
+r.resolution_percentage = 40 if PREVIEW else 75  # 810x1440, upscaled to 1080x1920 in encode.py
 sc.cycles.samples = 24 if PREVIEW else 12
 sc.cycles.adaptive_threshold = 0.06
 sc.cycles.use_denoising = True
