@@ -355,13 +355,13 @@ floor_box.rigid_body.restitution = 0.05
 floor_box.hide_render = True
 
 # (release frame, location, rotation XYZ degrees) - bag 1 is already in frame at t = 0
-# bags wait far off-stage (kinematic) and are placed just above the frame the frame before release
+# (release frame, location, rotation XYZ deg); picked by search_drops.py for a compact pile with logos to camera
 DROPS = [
-    (1, (-0.08, 0.05, 0.60), (6, -5, 12)),
-    (13, (0.28, 0.10, 1.08), (-10, 8, -18)),
-    (28, (-0.30, 0.10, 1.10), (14, -10, 25)),
-    (37, (0.08, -0.22, 1.12), (-8, -14, -6)),
-    (52, (-0.02, -0.04, 1.25), (8, 5, 10)),
+    (1, (-0.08, 0.05, 0.6), (8.8, -5.7, 6.8)),
+    (13, (0.302, 0.188, 1.08), (-14.7, -6.5, -32.2)),
+    (28, (-0.202, 0.007, 1.1), (19.6, -24.8, 25.4)),
+    (37, (0.179, -0.284, 1.12), (-14.9, -10.0, -3.4)),
+    (52, (-0.005, -0.066, 1.25), (-8.5, 8.4, 2.0)),
 ]
 if os.environ.get("DROPS"):
     DROPS = [tuple(d) for d in __import__("json").loads(os.environ["DROPS"])]
