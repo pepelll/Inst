@@ -1,3 +1,7 @@
 node_modules/
 ref_frames/
 stills/
+bags/render/
+bags/render_preview/
+bags/bags.blend*
+bags/trajectory.txt*
