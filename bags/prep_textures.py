@@ -64,3 +64,13 @@ print("body px", body.sum(), "handle px", handle.sum())
 plain = rgb[540:800, 150:410]
 plain = plain - plain.mean((0, 1)) + rgb[540:800, 150:410].reshape(-1, 3).mean(0)
 Image.fromarray(np.clip(plain, 0, 255).astype(np.uint8)).save("tex/plain.png")
+
+# 1D strap mask (by photo column): lets the black straps continue over the top/bottom where the grain is used
+lum = rgb[620:960].mean(-1)
+dark = (lum < 50).mean(0)
+dark = (dark > 0.6).astype(np.float32)
+dark[:300] = 0
+dark[950:] = 0  # only the two straps, not the dark end panels
+dark = ndi.uniform_filter1d(dark, 5)
+Image.fromarray(np.tile((dark * 255).astype(np.uint8), (8, 1))).save("tex/strap_mask.png")
+print("strap columns", np.where(dark > 0.5)[0][[0, -1]])

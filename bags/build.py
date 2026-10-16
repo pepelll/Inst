@@ -213,7 +213,7 @@ def leather_material(name, tex_file):
         L(sock, n.inputs["Value"])
         return n.outputs["Result"]
 
-    side = smooth(absn(sep.outputs["Y"]), 0.32, 0.62, invert=True)
+    side = smooth(absn(sep.outputs["Y"]), 0.55, 0.88, invert=True)
     ends = smooth(absn(sep.outputs["X"]), 0.55, 0.85)
 
     tc = nt.nodes.new("ShaderNodeTexCoord")
@@ -233,20 +233,42 @@ def leather_material(name, tex_file):
     L(ends, dark.inputs["Factor"])
     L(grain.outputs["Color"], dark.inputs["A"])
 
+    # straps continue over the top / bottom (photo columns where the straps are)
+    uvn = nt.nodes.new("ShaderNodeUVMap")
+    uvn.uv_map = "UV"
+    smask = image_node(nt, "strap_mask.png")
+    smask.image.colorspace_settings.name = "Non-Color"
+    smask.interpolation = "Linear"
+    L(uvn.outputs["UV"], smask.inputs["Vector"])
+    no_end = smooth(absn(sep.outputs["X"]), 0.35, 0.6, invert=True)
+    sfac = nt.nodes.new("ShaderNodeMath")
+    sfac.operation = "MULTIPLY"
+    L(smask.outputs["Color"], sfac.inputs[0])
+    L(no_end, sfac.inputs[1])
+    strap = nt.nodes.new("ShaderNodeMix")
+    strap.data_type = "RGBA"
+    strap.inputs["B"].default_value = (0.018, 0.018, 0.018, 1)
+    L(sfac.outputs[0], strap.inputs["Factor"])
+    L(dark.outputs["Result"], strap.inputs["A"])
+
     mix = nt.nodes.new("ShaderNodeMix")
     mix.data_type = "RGBA"
     L(side, mix.inputs["Factor"])
     L(img.outputs["Color"], mix.inputs["A"])
-    L(dark.outputs["Result"], mix.inputs["B"])
+    L(strap.outputs["Result"], mix.inputs["B"])
 
     # piping along the seam (object y ~ 0 on the outline)
     sep2 = nt.nodes.new("ShaderNodeSeparateXYZ")
     L(tc.outputs["Object"], sep2.inputs["Vector"])
     pipe = smooth(absn(sep2.outputs["Y"]), 0.004, 0.009, invert=True)
+    pipe_k = nt.nodes.new("ShaderNodeMath")
+    pipe_k.operation = "MULTIPLY"
+    L(pipe, pipe_k.inputs[0])
+    L(no_end, pipe_k.inputs[1])  # the zipper seam runs over the top, not across the end panels
     pipe_mix = nt.nodes.new("ShaderNodeMix")
     pipe_mix.data_type = "RGBA"
     pipe_mix.inputs["B"].default_value = (0.012, 0.012, 0.012, 1)
-    L(pipe, pipe_mix.inputs["Factor"])
+    L(pipe_k.outputs[0], pipe_mix.inputs["Factor"])
     L(mix.outputs["Result"], pipe_mix.inputs["A"])
     color = pipe_mix.outputs["Result"]
     L(color, bsdf.inputs["Base Color"])
@@ -464,25 +486,26 @@ r.engine = "CYCLES"
 sc.cycles.device = "CPU"
 r.resolution_x, r.resolution_y = 1920, 1080
 r.resolution_percentage = 40 if PREVIEW else 100
-sc.cycles.samples = 24 if PREVIEW else 96
-sc.cycles.adaptive_threshold = 0.015
+sc.cycles.samples = 24 if PREVIEW else 28
+sc.cycles.adaptive_threshold = 0.04
 sc.cycles.use_denoising = True
 sc.cycles.denoiser = "OPENIMAGEDENOISE"
-sc.cycles.max_bounces = 6
-sc.cycles.diffuse_bounces = 3
+sc.cycles.max_bounces = 4
+sc.cycles.diffuse_bounces = 2
 sc.cycles.glossy_bounces = 2
 sc.cycles.transmission_bounces = 0
 sc.cycles.volume_bounces = 0
 r.use_motion_blur = True
 r.motion_blur_shutter = 0.35
 sc.view_settings.view_transform = "Standard"
-sc.view_settings.look = "None"
+sc.view_settings.look = "Medium Contrast"
 sc.view_settings.exposure = 0.0
 r.film_transparent = True
 r.image_settings.file_format = "PNG"
 r.image_settings.color_mode = "RGBA"
 r.image_settings.color_depth = "8"
 r.threads_mode = "AUTO"
+r.use_persistent_data = True
 
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, "bags.blend"))
 
